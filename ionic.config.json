@@ -1,0 +1,7 @@
+{
+  "name": "scanner-EAN",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
