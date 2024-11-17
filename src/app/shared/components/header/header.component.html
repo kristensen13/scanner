@@ -1,0 +1,63 @@
+<!-- <ion-header class="ion-no-border">
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start"> -->
+      <!-- @if (backButton) { -->
+        <!-- <ion-back-button icon="arrow-back" text="" [defaultHref]="backButton"> -->
+          <!-- <ion-icon name="arrow-back"></ion-icon> -->
+        <!-- </ion-back-button> -->
+      <!-- } -->
+      <!-- @else if (isModal) {
+        <ion-button (click)="dismissModal()">
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </ion-button>
+      } @if (showMenu) {
+        <ion-menu-button menu="menu-content"></ion-menu-button>
+      } -->
+    <!-- </ion-buttons>
+    <ion-title>
+      <strong>{{ title }}</strong>
+    </ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button>
+        <ion-back-button icon="chevron-back-outline" text="" [defaultHref]="backButton"/>
+      </ion-button>
+      <ion-button>
+        @if (backButton) {
+        <ion-searchbar
+          show-clear-button="always"
+          clear-icon="trash-bin"
+           placeholder="Buscar"
+          class="search-toolbar">
+        </ion-searchbar>
+        }@else {
+          <ion-searchbar
+          show-clear-button="always"
+          clear-icon="trash-bin"
+           placeholder="Buscar"
+          class="search-no-backButton"></ion-searchbar>
+        }
+      </ion-button>
+      <ion-button>
+        <div class="cart-container">
+          <ion-icon slot="start" name="cart-outline"></ion-icon>
+          <!-- Contenedor del monto total -->
+          <div class="cart-total">{{ totalCompra | currency:'EUR' }}</div>
+        </div>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- <ion-content>
+  <ion-title>
+    <strong>{{ title }}</strong>
+  </ion-title>
+</ion-content> -->

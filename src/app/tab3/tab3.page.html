@@ -1,49 +1,33 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title class="ion-text-center">
-      Categorías
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-<ion-list>
-  @for (item of data; track $index) {
-  <ion-item (click)="openCategory()">
-    <ion-label>{{ data[0].Nombre }}</ion-label>
-  </ion-item>
-}
-</ion-list>
-</ion-content> -->
-
 <ion-header>
+  <app-header title="Escanear EAN"/>
   <ion-toolbar>
-    <ion-title class="ion-text-center">
-      Categorías
-    </ion-title>
+    <ion-searchbar
+    showClearButton="focus"
+    placeholder="CÓDIGO EAN"
+    animated="true"
+    mode="ios"
+    (ionChange)="buscar($event)"
+    color="light"
+    inputmode="search"
+    type="search"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-list>
-    <ng-container *ngFor="let category of categoriesTree">
-      <ion-item>
-        <ion-label>{{ category.Nombre }}</ion-label>
-      </ion-item>
-      <ng-container *ngIf="category.subCategorias.length > 0">
-        <ion-list *ngFor="let subCategory of category.subCategorias">
-          <ion-item>
-            <ion-label>{{ subCategory.Nombre }}{{ subCategory.Id }}</ion-label>
-          </ion-item>
-          <!-- <ng-container *ngIf="subCategory.subCategorias.length > 0">
-            <ion-list *ngFor="let subSubCategory of subCategory.subCategorias">
-              <ion-item>
-                <ion-label>{{ subSubCategory.Nombre }}</ion-label>
-              </ion-item>
-            </ion-list>
-          </ng-container> -->
-        </ion-list>
-      </ng-container>
-    </ng-container>
-  </ion-list>
+<ion-content>
+@if (data) {
+<ion-card class="ion-text-center">
+  @if (showSpinner) {
+  <ion-spinner name="crescent"></ion-spinner>
+  }
+  <ion-card-header>
+    <img src="{{ this.image }}" alt="" srcset="">
+    <ion-card-title>{{ data.Nombre | uppercase }}</ion-card-title>
+    <ion-card-subtitle>{{ this.codeStr }} {{ data.Codigo }}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+    <h1>{{ this.price }} {{ data.Pvp | currency:'EUR' }}</h1>
+  </ion-card-content>
+
+</ion-card>
+}
 </ion-content>

@@ -1,38 +1,42 @@
 
+
 <ion-header>
-  <ion-toolbar color="coalimar">
-    <ion-title class="ion-text-center">
-    Búsqueda Manual
-    </ion-title>
-  </ion-toolbar>
+  <app-header title="Escanear EAN"/>
   <ion-toolbar>
-    <ion-searchbar
-    animated="true"
-    mode="ios"
-    (ionChange)="buscar($event)"
-    color="light"
-    inputmode="search"
-    placeholder="INTRODUCE CÓDIGO EAN"
-    type="search"
-></ion-searchbar>
+    <ion-grid class="ion-text-center">
+      <ion-row>
+        <ion-col col-12>
+          <ion-button
+            color="coalimar"
+            mode="ios"
+            (click)="scanBarcode()"
+            ion-button
+            fill="outline"
+            type="reset"
+            size="small"
+            ><ion-icon name="barcode-outline"></ion-icon
+            >&nbsp;Abrir Cámara</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-@if (data) {
-<ion-card class="ion-text-center">
-  @if (showSpinner) {
-  <ion-spinner name="crescent"></ion-spinner>
-  }
-  <ion-card-header>
-    <img src="{{ this.image }}" alt="" srcset="">
-    <ion-card-title>{{ data.Nombre | uppercase }}</ion-card-title>
-    <ion-card-subtitle>{{ this.codeStr }} {{ data.Codigo }}</ion-card-subtitle>
-  </ion-card-header>
-  <ion-card-content>
-    <h1>{{ this.price }} {{ data.Pvp | currency:'EUR' }}</h1>
-  </ion-card-content>
+  @if(data){
+  <ion-card class="ion-text-center">
+    <ion-card-header>
+      <img [src]="this.image" />
+      <ion-card-title>{{ data.Nombre | uppercase }}</ion-card-title>
+      <ion-card-subtitle
+        >{{ codeStr }} {{ data.Codigo }}</ion-card-subtitle
+      >
+    </ion-card-header>
 
-</ion-card>
-}
+    <ion-card-content>
+      <h1>{{ price }} {{ data.Pvp | currency : "EUR" }}</h1>
+    </ion-card-content>
+  </ion-card>
+  }
 </ion-content>

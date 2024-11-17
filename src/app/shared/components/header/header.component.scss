@@ -1,0 +1,37 @@
+ion-title {
+  text-align: center;
+}
+
+ion-back-button, ion-icon{
+  color: var(--ion-color-dark);
+
+}
+
+.search-toolbar{
+  padding-top: 1rem;
+  width: 10rem;
+}
+
+.search-no-backButton{
+  padding-top: 1rem;
+  width: 12rem;
+}
+
+.cart-container {
+  display: flex;
+  flex-direction: column; /* Alinea elementos verticalmente */
+  align-items: center;    /* Centra los elementos horizontalmente */
+  justify-content: center; /* Centra los elementos verticalmente */
+}
+
+.cart-container ion-icon {
+  font-size: 24px; /* Tamaño del icono */
+  color: var(--ion-color-dark); /* Cambiar color si es necesario */
+}
+
+.cart-total {
+  font-size: 12px;
+  color: var(--ion-color-dark);
+  text-align: center;
+  margin-top: 4px; /* Espacio entre el icono y el texto */
+}

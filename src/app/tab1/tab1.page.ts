@@ -1,17 +1,13 @@
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/angular/standalone';
+import { Component, inject } from '@angular/core';
+import { IonThumbnail, IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem, IonItemDivider, IonAccordionGroup, IonAccordion, IonCol, IonRow, IonCard, IonText, IonImg, IonIcon, IonGrid } from '@ionic/angular/standalone';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
-
-import { LoaderService } from 'src/app/services/loader.service';
-import { IonicModule } from '@ionic/angular';
-import { CurrencyPipe, NgIf, UpperCasePipe } from '@angular/common';
-import { barcodeOutline } from 'ionicons/icons';
+import { LowerCasePipe, NgFor, NgIf } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { environment } from 'src/environments/environment';
-import { ScannerService } from '../services/scanner.service';
-
-const baseUrl = environment.apiUrl;
+import { addCircleOutline, basketOutline, fishOutline, fitnessOutline, flowerOutline, happyOutline, medkitOutline, pawOutline, pizzaOutline, shirtOutline, snowOutline, sparklesOutline, wineOutline } from 'ionicons/icons';
+import { CategoryService } from '../services/category.service';
+import { RouterLink } from '@angular/router';
+import { HeaderComponent } from "../shared/components/header/header.component";
+import { UtilsService } from '../services/utils.service';
 
 @Component({
   selector: 'app-tab1',
@@ -19,91 +15,94 @@ const baseUrl = environment.apiUrl;
   styleUrls: ['tab1.page.scss'],
   standalone: true,
   imports: [
-    IonCardContent,
-    IonCardSubtitle,
-    IonCardTitle,
-    IonCardHeader,
-    IonCard,
-    IonIcon,
-    IonButton,
-    IonCol,
-    IonRow,
     IonGrid,
+    IonIcon,
+    IonThumbnail,
+    IonImg,
+    IonText,
+    IonCard,
+    IonRow,
+    IonCol,
+    IonAccordion,
+    IonAccordionGroup,
+    NgIf,
+    NgFor,
+    IonItemDivider,
+    IonItem,
+    IonList,
+    IonLabel,
     IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
     ExploreContainerComponent,
-    CurrencyPipe,
-    UpperCasePipe
+    RouterLink,
+    HeaderComponent,
+    LowerCasePipe
   ],
 })
 export class Tab1Page {
-  // private barcodeScanner = inject(BarcodeScanner);
-  private http = inject(HttpClient);
-  private ionLoader = inject(LoaderService);
-  private scanSvc = inject(ScannerService);
 
-  showSpinner = true;
-  code!: string;
-  data: any;
-  id!: number;
-  filename!: string;
-  image!: string;
-  codeStr = 'Código: ';
-  price = 'Precio: ';
+  private categorySvc = inject(CategoryService);
+  private utilsSvc = inject(UtilsService);
+  categoriesTree: any[] = [];
+
+  // Define aquí la propiedad icons
+  icons = [
+    { title: 'Frescos', icon: 'fish-outline' },
+    { title: 'Despensa', icon: 'basket-outline' },
+    { title: 'Bebidas', icon: 'wine-outline' },
+    { title: 'Congelados', icon: 'snow-outline' },
+    { title: 'Horno', icon: 'pizza-outline' },
+    { title: 'Bebé', icon: 'happy-outline' },
+    { title: 'Perfumería e Higiene', icon: 'sparkles-outline' },
+    { title: 'Limpieza y Hogar', icon: 'shirt-outline' },
+    { title: 'Parafarmacia', icon: 'medkit-outline' },
+    { title: 'Mascotas', icon: 'paw-outline' },
+    { title: 'Bio & Salud', icon: 'fitness-outline' },
+    { title: 'Jardín y Piscina', icon: 'flower-outline' },
+  ];
 
   constructor() {
-    addIcons({ barcodeOutline });
+    this.fetchCategories();
+    this.addAllIcons();
   }
 
-  async scanBarcode() {
-    try {
-      await this.scanSvc.startScan().then((barcodeData) => {
-        this.code = barcodeData;
-        console.log('Barcode data', this.code);
-        this.http
-          .get(`${baseUrl}Articulo/PorCodigoBarras/${this.code}.`)
-          .subscribe((resp: any) => {
-            console.log(resp);
-            if (Object.entries(resp).length !== 0) {
-              this.data = resp[0];
-              this.id = resp[0].Id;
-              console.log(this.id);
+  addAllIcons() {
+    addIcons({
+      'fish-outline': fishOutline,
+      'basket-outline': basketOutline,
+      'wine-outline': wineOutline,
+      'snow-outline': snowOutline,
+      'pizza-outline': pizzaOutline,
+      'happy-outline': happyOutline,
+      'sparkles-outline': sparklesOutline,
+      'shirt-outline': shirtOutline,
+      'medkit-outline': medkitOutline,
+      'paw-outline': pawOutline,
+      'fitness-outline': fitnessOutline,
+      'flower-outline': flowerOutline,
+      'add-circle-outline': addCircleOutline
+    });
+  }
 
-              this.http
-                .get(
-                  `${baseUrl}FotoDeProducto/PequePrincipalPorIdArticulo/${this.id}`
-                )
-                .subscribe((res: any) => {
-                  console.log(res.Id);
-                  this.filename = res.NombreArchivo;
-                  console.log(this.filename);
+  async fetchCategories() {
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
+    this.categorySvc.fetchCategories().subscribe((resp: any) => {
+      this.categoriesTree = [this.categorySvc.buildCategoryTree(resp)];
+      // console.log(this.categoriesTree);
+    });
+    await loading.dismiss();
+  }
 
-                  this.image = `https://www.coalimaronline.com/assets/fotosArticulos/${this.filename}`;
-                  console.log(this.image);
-                });
-            } else {
-              // console.log('Hola');
-              this.image = '../../assets/images/busquedaSinResultados.png';
-              this.codeStr = '';
-              this.price = '';
-              this.data = {
-                //Nombre: 'No existe el producto',
-                //Pvp: null,
-                //Codigo: '---',
-              };
-            }
-          });
+  getIconForCategory(nombre: string): string {
+    const icon = this.icons.find(i => i.title === nombre);
+    return icon ? icon.icon : 'add-circle-outline';
+  }
 
-        // // .catch((err) => {
-        // //   console.log('Error', err);
-        // // });
-      });
-    } catch (error) {
-      console.log(error);
-
-    }
-
+  // Llama a getCategoryUrl desde el servicio
+  getCategoryUrl(categoryName: string): string {
+    return this.categorySvc.getCategoryUrl(categoryName);
   }
 }

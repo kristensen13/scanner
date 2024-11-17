@@ -1,53 +1,91 @@
+
+
+/////////////
 import { Component, inject } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonList, IonItem, IonItemDivider } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonCard, IonSpinner, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/angular/standalone';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { HttpClient } from '@angular/common/http';
-import { NgFor, NgIf } from '@angular/common';
+import { Network } from '@capacitor/network';
+import { CurrencyPipe, UpperCasePipe } from '@angular/common';
+import { HeaderComponent } from '../shared/components/header/header.component';
+
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
   standalone: true,
-  imports: [NgIf, NgFor, IonItemDivider, IonItem, IonList, IonLabel, IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent],
+  imports: [IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonSpinner, IonCard, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent, CurrencyPipe, UpperCasePipe, HeaderComponent]
+
 })
 export class Tab3Page {
 
-  // private http = inject(HttpClient)
+  http = inject(HttpClient)
 
-  // data!: any[];
+  showSpinner = true;
 
-  // constructor() {
-  //   this.openCategory();
-  // }
+  code!: string;
+  data: any;
+  id!: number;
+  filename!: string;
+  image!: string;
+  codeStr = 'Código: ';
+  price = 'Precio: ';
 
-  // openCategory() {
-  //   this.http.get('https://www.coalimaronline.com/api/ArbolFamilia/Raiz').subscribe((resp: any) => {
-  //     this.data = resp.InverseIdPadreOrigenNavigation;
-  //     console.log(this.data);
-  //   });
-  // }
+  buscar(event: any) {
+    setTimeout(() => {
+      this.showSpinner = false;
+    }, 1000);
+    this.code = event.target.value;
+    //console.log(this.code);
 
-  private http = inject(HttpClient);
-  categoriesTree: any[] = [];
+    this.http
+      .get(
+        `https://www.coalimaronline.com/api/Articulo/PorCodigoBarras/${this.code}.`
+      )
+      .subscribe((resp: any) => {
+        //console.log(resp);
+        if (Object.entries(resp).length !== 0) {
+          this.data = resp[0];
+          console.log(this.data);
 
-  constructor() {
-    this.fetchCategories();
+          this.id = resp[0].Id;
+          //console.log(this.id);
+
+          this.http
+            .get(
+              `https://www.coalimaronline.com/api/FotoDeProducto/PequePrincipalPorIdArticulo/${this.id}`
+            )
+            .subscribe((res: any) => {
+              //console.log(res.Id);
+              this.filename = res.NombreArchivo;
+              // console.log(this.nombreArchivo);
+
+              this.image = `https://www.coalimaronline.com/assets/fotosArticulos/${this.filename}`;
+              //console.log(this.image);
+            });
+        } else {
+          // console.log('Hola');
+          this.image = '../../assets/images/busquedaSinResultados.png';
+          this.codeStr = '';
+          this.price = '';
+          this.data = {
+
+            //Nombre: 'No existe el producto',
+
+            //Pvp: null,
+
+            //Codigo: '---',
+          };
+        }
+      });
+
+    // // .catch((err) => {
+    // //   console.log('Error', err);
+    // // });
+    //});
   }
 
-  fetchCategories() {
-    this.http.get('https://www.coalimaronline.com/api/ArbolFamilia/Raiz').subscribe((resp: any) => {
-      this.categoriesTree = [this.buildCategoryTree(resp)]; // Convertimos la raíz en un array
-      console.log(this.categoriesTree); // Visualizar la estructura anidada en la consola
-    });
-  }
 
-  buildCategoryTree(category: any): any {
-    // Clonar la categoría para añadir subcategorías sin modificar el original
-    const node = {
-      ...category,
-      subCategorias: (category.InverseIdPadreOrigenNavigation || []).map((subCategory: any) => this.buildCategoryTree(subCategory))
-    };
-    return node;
-  }
 }
+

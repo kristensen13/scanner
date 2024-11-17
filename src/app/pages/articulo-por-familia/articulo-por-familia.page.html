@@ -1,0 +1,22 @@
+
+<app-header [backButton]="'categoria-detalle/' + page" [title]="subCategoryName"/>
+<ion-content class="ion-padding-vertical">
+  <ion-grid>
+    <ion-row>
+      @for (article of articles; track $index) {
+          <ion-col size="6" size-md="6" size-lg="4">
+            <!-- <ion-card (click)="openProductDetails(category, subSubCategory)"> -->
+              <ion-card  (click)="openProductDetails(article)">
+              <ion-img [src]="article.image || '../../../assets/images/no-image.png'"></ion-img>
+              <ion-card-header>
+                <ion-card-title class="ion-text-center">{{ article.Nombre }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content class="ion-text-center">
+                <strong class="price">{{ article.Pvp | currency:'EUR' }}</strong>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        }
+    </ion-row>
+  </ion-grid>
+</ion-content>

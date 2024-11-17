@@ -1,0 +1,21 @@
+<app-header backButton="/" [title]="categoryName"></app-header>
+<ion-content class="ion-padding">
+  @for (mainCategory of subCategoriesTree; track $index) {
+    @for (category of mainCategory.InverseIdPadreOrigenNavigation; track $index) {
+      @if (category.Nombre === categoryName) {
+        @for (subCategory of category.InverseIdPadreOrigenNavigation; track $index) {
+          <ion-accordion-group expand="inset">
+            <ion-accordion value="first">
+              <ion-item slot="header" >
+                <ion-label>{{ subCategory.Nombre }}</ion-label>
+              </ion-item>
+              @for (subSubCategory of subCategory.InverseIdPadreOrigenNavigation; track $index) {
+                <div (click)="openSubcategory(category, subSubCategory)" class="subcat" slot="content">{{ subSubCategory.Nombre }}</div>
+              }
+            </ion-accordion>
+          </ion-accordion-group>
+        }
+      }
+    }
+  }
+</ion-content>

@@ -1,45 +1,21 @@
-
-  <ion-header>
-    <ion-toolbar color="coalimar">
-      <ion-title class="ion-text-center"> Escanear Código de Barras </ion-title>
-    </ion-toolbar>
-
-
-<!-- <ion-toolbar> -->
-  <ion-grid class="ion-text-center">
-    <ion-row>
-      <ion-col col-12>
-        <ion-button
-          color="coalimar"
-          mode="ios"
-          (click)="scanBarcode()"
-          ion-button
-          fill="outline"
-          type="reset"
-          size="small"
-          ><ion-icon name="barcode-outline"></ion-icon
-          >&nbsp;Abrir Cámara</ion-button
-        >
-      </ion-col>
+<app-header title="Categorías"/>
+<ion-content class="ion-padding">
+  <ion-grid>
+    @for (category of categoriesTree; track $index) {
+    <ion-row class="ion-justify-content-center">
+      @if (category.subCategorias.length > 0) {
+      <ng-container>
+        <ion-col size="6" sizeMd="6" class="ion-text-center" *ngFor="let subCategory of category.subCategorias">
+          <ion-card [routerLink]="['/categoria-detalle', subCategory.Nombre | lowercase]" color="light">
+            <ion-thumbnail [style.background]="'rgba(117, 24, 253, 1)'">
+              <ion-icon  [name]="getIconForCategory(subCategory.Nombre)"></ion-icon>
+            </ion-thumbnail>
+            <ion-label>{{ subCategory.Nombre }}</ion-label>
+          </ion-card>
+        </ion-col>
+      </ng-container>
+    }
     </ion-row>
-  </ion-grid>
-<!-- </ion-toolbar> -->
-</ion-header>
-
-<ion-content>
-  @if(data){
-  <ion-card class="ion-text-center">
-    <ion-card-header>
-      <img [src]="this.image" />
-      <ion-card-title>{{ data.Nombre | uppercase }}</ion-card-title>
-      <ion-card-subtitle
-        >{{ codeStr }} {{ data.Codigo }}</ion-card-subtitle
-      >
-    </ion-card-header>
-
-    <ion-card-content>
-      <h1>{{ price }} {{ data.Pvp | currency : "EUR" }}</h1>
-    </ion-card-content>
-  </ion-card>
   }
+  </ion-grid>
 </ion-content>
